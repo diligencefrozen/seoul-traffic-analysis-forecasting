@@ -25,7 +25,7 @@
 
 저는 **특정 날짜의 시간대별 예상 혼잡도 분석**을 맡았습니다.
 
-대표 사례로 **어린이날(5월 5일)**을 골랐습니다. 날짜가 매년 같기 때문에 여러 해의 변화를 비교하기 쉽고, 같은 분석 방법을 다른 공휴일이나 원하는 날짜에도 적용할 수 있기 때문입니다.
+대표 사례로 어린이날(5월 5일)을 골랐습니다. 날짜가 매년 같기 때문에 여러 해의 변화를 비교하기 쉽고, 같은 분석 방법을 다른 공휴일이나 원하는 날짜에도 적용할 수 있기 때문입니다.
 
 제가 구현한 내용은 다음과 같습니다.
 
@@ -223,7 +223,7 @@ The team focused on four goals:
 
 I was responsible for **forecasting congestion for a selected date and time of day**.
 
-I used **Children's Day (May 5)** as the main example because it falls on the same calendar date every year. That makes year-to-year comparisons easier, while the same workflow can also be used for other holidays or selected dates.
+I used Children's Day (May 5) as the main example because it falls on the same calendar date every year. That makes year-to-year comparisons easier, while the same workflow can also be used for other holidays or selected dates.
 
 My work included:
 
