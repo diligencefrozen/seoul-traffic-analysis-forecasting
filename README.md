@@ -1,130 +1,160 @@
-# 서울시 교통량 분석 및 예측  
-# Seoul Traffic Analysis and Forecasting
+# 서울시 교통량 분석 및 예측
+### Seoul Traffic Analysis & Forecasting
 
-> **5명이 함께 진행한 데이터 분석 프로젝트입니다.**  
-> 2020~2025년 서울시 교통량을 살펴보고, 그 흐름을 바탕으로 2026~2030년 교통량을 추정했습니다.  
-> 이 저장소에서는 팀 전체 작업과 함께 **제가 맡은 ‘특정 날짜의 시간대별 혼잡도 분석’**을 자세히 보여 줍니다.
+**Python · pandas · NumPy · Matplotlib · Google Colab**
+
+2020~2025년 서울시 교통량 데이터를 분석하고, 연도별 추세를 바탕으로 2026~2030년 교통량을 예측한 5인 팀 프로젝트입니다.  
+이 저장소에는 팀 공통 데이터 파이프라인과 팀원별 분석 코드가 들어 있으며, **제가 담당한 ‘특정 날짜의 시간대별 혼잡도 예측’**을 중심으로 정리했습니다.
+
+[한국어](#한국어) · [English](#english)
 
 ---
 
-## 한국어
+# 한국어
 
-### 1. 한눈에 보기
+## 1. 프로젝트 소개
 
-서울시 교통량은 날짜, 요일, 시간대, 지역에 따라 크게 달라집니다.  
-이 프로젝트에서는 과거 교통량 자료를 정리한 뒤, **언제 어디가 붐비는지 살펴보고 앞으로의 교통량도 추정**했습니다.
+서울의 교통량은 날짜, 요일, 시간대, 측정 지점에 따라 크게 달라집니다.  
+이 프로젝트에서는 서울 열린데이터광장의 2020~2025년 교통량 데이터를 활용해 **과거 패턴을 분석하고 2026~2030년의 교통량을 예측**했습니다.
 
-주요 목표는 다음과 같습니다.
+### 목표
 
-- 시간대와 요일에 따라 교통량이 어떻게 달라지는지 살펴보기
-- 2020~2025년 자료를 바탕으로 2026~2030년 교통량 추정하기
-- 분기, 날짜, 지역별 유입·유출 교통량 비교하기
-- 분석 결과를 그래프와 표로 보여 주어 쉽게 이해할 수 있게 만들기
+- 시간대와 요일에 따른 교통량 패턴 분석
+- 2026~2030년 교통량 예측
+- 분기별·날짜별·지역별 교통량 비교
+- 특정 날짜의 시간대별 혼잡도 분석
+- 분석 결과를 그래프와 히트맵으로 시각화
 
-### 2. 제가 맡은 일
+---
 
-저는 **특정 날짜의 시간대별 예상 혼잡도 분석**을 맡았습니다.
+## 2. 프로젝트 구조
 
-대표 사례로 어린이날(5월 5일)을 골랐습니다. 날짜가 매년 같기 때문에 여러 해의 변화를 비교하기 쉽고, 같은 분석 방법을 다른 공휴일이나 원하는 날짜에도 적용할 수 있기 때문입니다.
+팀원별 분석 코드에서 전처리와 예측 로직을 반복해서 작성하지 않도록, **공통 전처리·예측 파이프라인을 `project_base.py`로 모듈화**했습니다.
 
-제가 구현한 내용은 다음과 같습니다.
+각 분석 스크립트는 `project_base.py`를 불러와 다음 기능을 공통으로 사용합니다.
 
-- 원하는 날짜와 시간의 예상 교통량 계산
-- 지점과 진행 방향별로 과거 교통량과 비교해 혼잡 정도 계산
-- 어린이날 오후 6시 기준 예상 혼잡 지점 상위 5곳 찾기
-- 해마다 가장 붐빌 것으로 보이는 시간대 찾기
-- 2030년 5월의 요일·시간대별 혼잡 흐름을 한눈에 볼 수 있는 그림 만들기
-- 2026~2030년의 혼잡 수준이 어떻게 달라지는지 비교하기
-
-### 3. 혼잡도는 어떻게 계산했나요?
-
-이 프로젝트에서 말하는 **혼잡도 100%는 도로의 최대 수용량을 뜻하지 않습니다.**
-
-각 지점과 진행 방향에서 **2025년 교통량 중 상위 10%가 시작되는 값**을 100% 기준으로 잡았습니다.
-
-예를 들면 다음과 같습니다.
-
-- **100%보다 높음**: 2025년에 교통량이 많았던 때보다 더 붐빌 것으로 예상
-- **100%보다 낮음**: 그 기준보다 덜 붐빌 것으로 예상
-
-즉, 이 값은 도로의 절대적인 한계를 뜻하는 수치가 아니라 **과거와 비교하기 위한 기준**입니다.
-
-### 4. 주요 결과
-
-#### 어린이날 오후 6시 예상 혼잡 지점 상위 5곳
-
-![어린이날 오후 6시 예상 혼잡 지점 상위 5곳](assets/01_childrens_day_top5.png)
-
-오목교 구간은 여러 해에 걸쳐 혼잡도가 높은 지점으로 반복해서 나타났습니다.  
-분석 결과 가운데 가장 높은 값은 **2028년 152.9%**였습니다.
-
-#### 해마다 가장 붐비는 시간대
-
-![해마다 가장 붐비는 시간대](assets/02_peak_hour_change.png)
-
-2026~2028년에는 **오전 8시**가 가장 붐빌 것으로 나타났고,  
-2029년부터는 가장 붐비는 시간이 **오후 시간대**로 옮겨가는 흐름이 보였습니다.
-
-#### 2030년 5월 요일·시간대별 예상 혼잡도
-
-![2030년 5월 요일·시간대별 예상 혼잡도](assets/03_weekday_hour_heatmap.png)
-
-오전에도 교통량이 많지만, **오후 3시부터 6시 사이**가 더 붐비는 흐름을 보였습니다.  
-이 분석에서는 **금요일 오후**가 특히 혼잡한 구간으로 나타났습니다.
-
-#### 2026~2030년 혼잡 수준 비교
-
-![2026~2030년 혼잡 수준 비교](assets/04_congestion_level_distribution.png)
-
-해마다 `원활 / 보통 / 혼잡 / 매우 혼잡`에 해당하는 비율이 어떻게 달라지는지 비교했습니다.
-
-### 5. 팀 전체에서 한 일
-
-| 팀원 | 맡은 분석 |
-|---|---|
-| 엄선필 | 분기별 평균 교통량 추정 |
-| 윤서영 | 날짜별 교통량 상위 5개·하위 5개 추정 |
-| 심승보 | 요일별 교통량 추정 |
-| **강지성** | **특정 날짜의 시간대별 예상 혼잡도 분석** |
-| 백승재 | 지역별 유입·유출 교통량 추정 |
-
-### 6. 데이터는 어떻게 처리했나요?
-
-팀에서 함께 쓰는 `project_base.py`를 먼저 만들고, 모든 분석이 같은 방식으로 데이터를 읽고 정리하도록 했습니다.
+- ZIP 파일 탐색 및 압축 해제
+- CSV 데이터 로딩
+- 교통량 데이터 전처리
+- 시간대·요일별 분석 테이블 생성
+- 연도별 추세 기반 회귀 모델 학습
+- 2026~2030년 예측값 생성
+- MAE, R²를 이용한 모델 성능 평가
 
 ```text
-2020~2025년 교통량 자료
+2020~2025 교통량 데이터
         ↓
-자료 불러오기와 정리
+CSV 로딩 및 전처리
         ↓
-교통량과 날짜·시간 정보 합치기
+시간대·요일별 분석 테이블 생성
         ↓
-시간대·요일별 학습용 자료 만들기
+연도별 추세 기반 회귀 모델 학습
         ↓
-과거 흐름을 이용해 2026~2030년 값 추정
+2025년 데이터로 모델 성능 평가
         ↓
-실제 2025년 자료와 비교해 오차 확인
+2026~2030년 교통량 예측
         ↓
-팀원별 주제 분석과 그래프 만들기
+팀원별 분석 및 시각화
 ```
 
-미래 값을 구할 때는 **연도에 따른 변화 흐름을 바탕으로 값을 추정하는 단순 회귀 방식**을 사용했습니다.  
-또한 MAE와 R²를 이용해 실제 값과 추정값의 차이를 확인했습니다.
+공통 로직을 한 모듈로 관리하면서 **중복 코드를 줄이고, 모든 팀원의 분석에서 같은 전처리 기준과 예측 방식을 사용할 수 있도록 구성**했습니다.
 
-> **쉽게 말하면:** 과거 몇 년 동안의 변화를 보고 앞으로 값이 어느 방향으로 움직일지 계산한 것입니다.
+---
 
-### 7. 사용한 기술
+## 3. 제가 담당한 기능
 
-| 구분 | 사용 도구 |
+### 특정 날짜의 시간대별 혼잡도 예측
+
+담당: **[강지성 / Jeesung Kahng](https://github.com/diligencefrozen)**
+
+`src/specific_day_congestion.py`에서 특정 날짜를 입력받아 시간대별 교통량과 예상 혼잡도를 분석했습니다.
+
+대표 사례로 **어린이날(5월 5일)**을 사용했습니다. 어린이날은 매년 날짜가 같아 연도별·시간대별 변화를 비교하기 쉽고, 같은 로직을 다른 공휴일이나 원하는 날짜에도 적용할 수 있습니다.
+
+### 구현 내용
+
+- 특정 날짜와 시간대의 2026~2030년 교통량 예측
+- 측정 지점·진행 방향별 혼잡도 계산
+- 어린이날 오후 6시 예상 혼잡 지점 TOP 5 추출
+- 연도별 최고 혼잡 시간대 분석
+- 2030년 5월 요일 × 시간대 혼잡도 히트맵 생성
+- 2026~2030년 혼잡도 등급 분포 비교
+
+---
+
+## 4. 혼잡도 기준
+
+이 프로젝트의 **혼잡도 100%는 도로의 최대 수용량을 의미하지 않습니다.**
+
+각 측정 지점과 진행 방향별로 **2025년 교통량의 상위 10%가 시작되는 값(90백분위수)**을 기준값으로 정하고, 이를 100%로 두었습니다.
+
+예를 들어:
+
+- **100% 초과**: 2025년의 높은 교통량 구간보다 더 혼잡할 것으로 예측
+- **100% 미만**: 해당 기준보다 덜 혼잡할 것으로 예측
+
+즉, 혼잡도는 도로 용량을 나타내는 절대 지표가 아니라 **2025년 실측값을 기준으로 만든 상대 지표**입니다.
+
+---
+
+## 5. 주요 분석 결과
+
+### 어린이날 오후 6시 예상 혼잡 지점 TOP 5
+
+![어린이날 오후 6시 예상 혼잡 지점 TOP 5](assets/01_childrens_day_top5.png)
+
+오목교 구간은 여러 연도에서 반복해서 상위권에 나타났습니다.  
+분석 결과 중 가장 높은 혼잡도는 **2028년 152.9%**로 예측됐습니다.
+
+### 연도별 최고 혼잡 시간대
+
+![연도별 최고 혼잡 시간대](assets/02_peak_hour_change.png)
+
+2026~2028년에는 **오전 8시**가 가장 혼잡한 시간대로 예측됐습니다.  
+2029년부터는 최고 혼잡 시간대가 **오후로 이동하는 패턴**이 나타났습니다.
+
+### 2030년 5월 요일 × 시간대 예상 혼잡도
+
+![2030년 5월 요일 × 시간대 예상 혼잡도](assets/03_weekday_hour_heatmap.png)
+
+오전 시간대도 교통량이 높지만, **오후 3시~6시 구간에서 더 높은 혼잡도**가 나타났습니다.  
+특히 **금요일 오후**가 가장 혼잡한 구간으로 예측됐습니다.
+
+### 2026~2030년 혼잡도 등급 분포
+
+![2026~2030년 혼잡도 등급 분포](assets/04_congestion_level_distribution.png)
+
+연도별로 `원활 / 보통 / 혼잡 / 매우 혼잡` 등급의 비율이 어떻게 변하는지 비교했습니다.
+
+---
+
+## 6. 팀원 및 역할
+
+| 팀원 | GitHub | 담당 |
+|---|---|---|
+| 엄선필 | [@ESP828](https://github.com/ESP828) | 분기별 평균 교통량 예측 |
+| 윤서영 | [@ila98111763-bit](https://github.com/ila98111763-bit) | 날짜별 교통량 TOP 5 / LOW 5 예측 |
+| 심승보 | [@ssbgit01](https://github.com/ssbgit01) | 요일별 교통량 예측 |
+| **강지성** | **[@diligencefrozen](https://github.com/diligencefrozen)** | **특정 날짜의 시간대별 혼잡도 예측** |
+| 백승재 | [@paikyeon](https://github.com/paikyeon) | 지역별 유입·유출 교통량 예측 |
+
+---
+
+## 7. 기술 스택
+
+| 구분 | 기술 |
 |---|---|
-| 개발 언어 | Python |
-| 작업 환경 | Google Colab, Jupyter Notebook |
-| 자료 처리 | pandas, NumPy |
-| 그래프 | Matplotlib |
-| 파일 처리 | pathlib, glob, zipfile, os |
-| 오차 확인 | MAE, R² |
+| Language | Python |
+| Environment | Google Colab, Jupyter Notebook |
+| Data Processing | pandas, NumPy |
+| Visualization | Matplotlib |
+| File Handling | pathlib, glob, zipfile, os |
+| Model | 연도별 추세 기반 회귀 |
+| Evaluation | MAE, R² |
 
-### 8. 저장소 구성
+---
+
+## 8. 저장소 구조
 
 ```text
 .
@@ -146,183 +176,257 @@
     └── daily_top_low_forecast.py
 ```
 
-- `project_base.py`  
-  모든 팀원이 함께 쓰는 자료 처리와 예측 기능이 들어 있습니다.
+### 주요 파일
 
-- `specific_day_congestion.py`  
-  제가 맡은 **특정 날짜의 시간대별 혼잡도 분석 코드**입니다.
+- `src/project_base.py`  
+  공통 데이터 로딩, 전처리, 분석 테이블 생성, 회귀 모델 학습·예측 기능을 담당합니다.
+
+- `src/specific_day_congestion.py`  
+  제가 담당한 특정 날짜·시간대별 혼잡도 예측 및 시각화 코드입니다.
+
+- `src/weekday_forecast.py`  
+  요일별 교통량 예측 코드입니다.
+
+- `src/quarterly_forecast.py`  
+  분기별 평균 교통량 예측 코드입니다.
+
+- `src/district_flow_forecast.py`  
+  지역별 유입·유출 교통량 예측 코드입니다.
+
+- `src/daily_top_low_forecast.py`  
+  날짜별 교통량 TOP 5 / LOW 5 분석 코드입니다.
 
 - `assets/`  
-  발표와 README에 사용한 주요 결과 그림이 들어 있습니다.
+  README와 발표 자료에 사용한 주요 결과 이미지를 보관합니다.
 
-### 9. 실행 방법
+---
 
-원래 코드는 **Google Colab 환경**에서 실행하도록 만들었습니다.
+## 9. 실행 방법
 
-1. `data/README.md`를 보고 필요한 정제 자료를 준비합니다.
-2. 자료 파일과 `src/project_base.py`, 실행할 분석 파일을 Colab에 올립니다.
-3. 필요한 라이브러리를 설치합니다.
+이 프로젝트는 **Google Colab 환경을 기준으로 개발**했습니다.
+
+### 1) 저장소 내려받기
+
+```bash
+git clone <repository-url>
+cd seoul-traffic-analysis-forecasting
+```
+
+### 2) 라이브러리 설치
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. 제가 맡은 분석을 실행하려면 다음 파일을 실행합니다.
+### 3) 데이터 준비
+
+`data/README.md`를 참고해 다음 정제 데이터를 준비합니다.
+
+```text
+seoul_traffic_2020_2025_point_month_weekday_all.csv
+seoul_traffic_2020_2025_point_month_hour_all.csv
+seoul_traffic_2020_2025_station_master_all.csv
+```
+
+기존 Colab 실행 방식에서는 위 파일이 포함된 ZIP 파일을 사용합니다.
+
+### 4) 특정 날짜 혼잡도 분석 실행
 
 ```bash
 python src/specific_day_congestion.py
 ```
 
-> 현재 일부 코드는 Colab의 `/content` 경로를 기준으로 작성되어 있습니다.  
-> 개인 컴퓨터에서 바로 실행하려면 파일 경로를 설정값으로 바꾸는 작업이 필요합니다.
+> 일부 코드는 Google Colab의 `/content` 경로를 기준으로 작성돼 있습니다.  
+> 로컬 환경에서 실행하려면 하드코딩된 파일 경로를 설정값이나 실행 인자로 분리하는 작업이 필요합니다.
 
-### 10. 결과를 볼 때 알아둘 점
+---
 
-이 프로젝트는 **학습을 목적으로 만든 교통량 분석·예측 프로젝트**입니다.  
-실제 도로 운영에 바로 쓰는 교통 예측 시스템은 아닙니다.
+## 10. 한계
 
-- 2026~2030년 값은 과거 자료의 흐름을 바탕으로 계산한 **추정값**입니다.
-- 공사, 정책 변화, 대중교통 변화, 날씨, 대형 행사 같은 미래 변수는 충분히 반영하지 못했습니다.
-- 혼잡도 100%는 도로의 최대 수용량이 아니라 **2025년 교통량과 비교하기 위한 기준**입니다.
-- 실제 서비스로 발전시키려면 더 다양한 자료와 여러 예측 방법을 함께 비교해야 합니다.
+이 프로젝트의 2026~2030년 값은 **과거 교통량의 연도별 추세를 기반으로 한 예측값**입니다.
 
-### 11. 다음에 개선하고 싶은 점
+따라서 다음과 같은 외부 요인은 충분히 반영하지 못했습니다.
 
-- Colab 전용 파일 경로를 없애고 어느 컴퓨터에서도 실행하기 쉽게 만들기
-- 자료 처리와 혼잡도 계산 기능에 자동 검사 코드 추가하기
-- 예측 결과와 오차를 자동으로 저장하도록 만들기
-- 현재 방식과 다른 예측 방법을 함께 비교하기
-- 날씨, 행사, 공휴일, 도로 정보 같은 자료 추가하기
-- 명령 한 번으로 분석하거나 화면에서 결과를 볼 수 있도록 프로그램 형태로 정리하기
+- 도로 공사 및 도로망 변경
+- 교통 정책 변화
+- 대중교통 이용량 변화
+- 날씨
+- 대형 행사
+- 장기적인 인구·도시 구조 변화
 
-### 12. 데이터 출처
+또한 혼잡도 100%는 도로 용량이 아니라 **2025년 데이터를 기준으로 만든 상대적인 혼잡 지표**입니다.
+
+---
+
+## 11. 개선 방향
+
+현재 코드를 포트폴리오 이후 단계까지 발전시킨다면 다음 항목을 우선 개선할 수 있습니다.
+
+- Colab 전용 경로 제거 및 설정 파일 분리
+- 데이터 전처리·혼잡도 계산 로직 테스트 코드 추가
+- 모델 성능 지표와 예측 결과 자동 저장
+- 다른 회귀·시계열 모델과 성능 비교
+- 날씨·공휴일·행사·도로 데이터 추가
+- CLI 또는 간단한 대시보드 형태로 실행 인터페이스 개선
+
+---
+
+## 12. 데이터 출처
 
 **서울 열린데이터광장 — 서울시 교통량 정보**  
 https://data.seoul.go.kr/dataList/OA-15064/L/1/datasetView.do
 
 **프로젝트 기간:** 2026년 7월 1일~7월 22일  
-**프로젝트 형태:** 5명 팀 프로젝트 / 데이터 분석 및 예측
+**프로젝트 형태:** 5인 팀 프로젝트 / 데이터 분석 및 예측
 
 ---
 
-## English
+# English
 
-### 1. Overview
+## 1. About the Project
 
-Traffic in Seoul changes widely depending on the date, day of the week, time of day, and location.  
-This project uses traffic-volume records from **2020 to 2025** to study those patterns and estimate traffic levels for **2026 to 2030**.
+This five-person team project analyzes Seoul traffic-volume data from 2020–2025 and uses historical trends to forecast traffic for 2026–2030.
 
-The team focused on four goals:
+The project focuses on how traffic changes by **time of day, weekday, quarter, date, and location**, then presents those patterns through charts and heatmaps.
 
-- Understand how traffic changes by hour and weekday
-- Estimate traffic volume for 2026–2030 from historical trends
-- Compare traffic by quarter, date, and district inflow/outflow
-- Present the results with charts that are easy to read without a data-science background
+### Goals
 
-### 2. My Role
+- Analyze hourly and weekday traffic patterns
+- Forecast traffic volume for 2026–2030
+- Compare traffic by quarter, date, and district
+- Estimate congestion for a selected date and time
+- Turn the results into readable charts and heatmaps
 
-I was responsible for **forecasting congestion for a selected date and time of day**.
+---
 
-I used Children's Day (May 5) as the main example because it falls on the same calendar date every year. That makes year-to-year comparisons easier, while the same workflow can also be used for other holidays or selected dates.
+## 2. Shared Data Pipeline
 
-My work included:
+To keep the team analyses consistent, we moved the shared preprocessing and forecasting logic into `project_base.py`.
 
-- Estimating traffic for a selected date and hour
-- Measuring congestion relative to recent traffic at each counting point and direction
-- Ranking the five locations expected to be most congested at 6:00 PM on Children's Day
-- Finding the predicted peak hour for each year
-- Building a weekday-by-hour view of expected congestion in May 2030
-- Comparing congestion-level distributions from 2026 through 2030
+Each analysis script imports the same module for:
 
-### 3. How the Congestion Score Works
-
-A congestion score of **100% does not mean the road has reached its physical capacity**.
-
-For each counting point and direction, I used the value where the **top 10% of 2025 traffic observations begin** as the 100% reference point.
-
-That means:
-
-- **Above 100%**: busier than the high-traffic range seen in 2025
-- **Below 100%**: less busy than that reference level
-
-The score is therefore a **historical comparison**, not a measure of maximum road capacity.
-
-### 4. Key Results
-
-#### Children's Day at 6:00 PM — Top 5 Expected Congestion Locations
-
-![Top 5 expected congestion locations on Children's Day](assets/01_childrens_day_top5.png)
-
-The Omokgyo section appeared repeatedly among the most congested locations.  
-The highest value in this analysis was **152.9% in 2028**.
-
-#### Predicted Peak Hour by Year
-
-![Predicted peak congestion hour by year](assets/02_peak_hour_change.png)
-
-The peak was predicted at **8:00 AM from 2026 to 2028**.  
-From 2029 onward, the peak shifted into the **afternoon**.
-
-#### Weekday × Hour Pattern for May 2030
-
-![Weekday and hour congestion pattern for May 2030](assets/03_weekday_hour_heatmap.png)
-
-Morning traffic remained high, but the stronger pattern appeared between **3:00 PM and 6:00 PM**.  
-**Friday afternoon** stood out as the busiest period in this view.
-
-#### Congestion-Level Mix, 2026–2030
-
-![Congestion level distribution from 2026 to 2030](assets/04_congestion_level_distribution.png)
-
-This chart compares how the share of `Free / Normal / Congested / Very Congested` conditions changes from year to year.
-
-### 5. Team Responsibilities
-
-| Member | Responsibility |
-|---|---|
-| Sunpil Eom | Quarterly average traffic forecast |
-| Seoyoung Yoon | Daily Top 5 / Low 5 traffic forecast |
-| Seungbo Sim | Weekday traffic forecast |
-| **Jisung Kang** | **Selected-date congestion forecast by time of day** |
-| Seungjae Baek | District inflow/outflow traffic forecast |
-
-### 6. Data and Forecasting Workflow
-
-The team built a shared `project_base.py` module so every analysis used the same data-loading and preprocessing steps.
+- ZIP discovery and extraction
+- CSV loading
+- Data preprocessing
+- Hourly and weekday analysis tables
+- Trend-based regression training
+- 2026–2030 forecast generation
+- Model evaluation with MAE and R²
 
 ```text
 2020–2025 traffic data
         ↓
-Load and clean the data
-        ↓
-Combine traffic records with date and time information
+Load and preprocess CSV files
         ↓
 Build hourly and weekday analysis tables
         ↓
-Estimate 2026–2030 values from historical trends
+Train trend-based regression models
         ↓
-Check error against 2025 observations
+Validate against 2025 observations
         ↓
-Run each team member's analysis and create charts
+Generate 2026–2030 forecasts
+        ↓
+Run team-specific analyses and visualizations
 ```
 
-The forecast uses a **simple regression model based on year-over-year trends**.  
-MAE and R² were used to check how closely the estimates matched observed values.
+This structure reduces duplicated code and keeps the preprocessing and forecasting rules consistent across the team's scripts.
 
-In plain terms, the model looks at how traffic changed over the previous years and extends that direction into the future.
+---
 
-### 7. Tech Stack
+## 3. My Contribution
+
+### Selected-Date Congestion Forecasting
+
+Owner: **[Jeesung Kahng](https://github.com/diligencefrozen)**
+
+My work is in `src/specific_day_congestion.py`. It forecasts traffic for a selected date and breaks the results down by time of day and location.
+
+I used **Children's Day (May 5)** as the main case study. Because the date is fixed each year, it provides a clean way to compare traffic patterns across multiple years. The same workflow can also be applied to other holidays or user-selected dates.
+
+### What I Implemented
+
+- Forecast traffic volume for a selected date and hour from 2026–2030
+- Calculate congestion scores by counting point and direction
+- Rank the Top 5 expected congestion locations at 6:00 PM on Children's Day
+- Identify the predicted peak hour for each year
+- Generate a weekday × hour congestion heatmap for May 2030
+- Compare congestion-level distributions from 2026–2030
+
+---
+
+## 4. Congestion Score
+
+A congestion score of **100% does not represent the physical capacity of a road**.
+
+For each counting point and direction, the project uses the **90th percentile of 2025 traffic volume** as the 100% reference level.
+
+That means:
+
+- **Above 100%**: predicted to be busier than the high-traffic range observed in 2025
+- **Below 100%**: predicted to be below that reference level
+
+The score is a **relative benchmark against 2025 observations**, not a road-capacity metric.
+
+---
+
+## 5. Key Results
+
+### Children's Day at 6:00 PM — Top 5 Expected Congestion Locations
+
+![Top 5 expected congestion locations on Children's Day](assets/01_childrens_day_top5.png)
+
+The Omokgyo section appeared repeatedly near the top across multiple forecast years.  
+The highest congestion score in this analysis was **152.9% for 2028**.
+
+### Predicted Peak Hour by Year
+
+![Predicted peak hour by year](assets/02_peak_hour_change.png)
+
+The model placed the peak at **8:00 AM from 2026 through 2028**.  
+Starting in 2029, the predicted peak shifted into the **afternoon**.
+
+### Weekday × Hour Congestion — May 2030
+
+![Weekday and hour congestion heatmap for May 2030](assets/03_weekday_hour_heatmap.png)
+
+Traffic remained elevated in the morning, but the stronger congestion pattern appeared between **3:00 PM and 6:00 PM**.  
+**Friday afternoon** was the busiest period in this analysis.
+
+### Congestion-Level Distribution — 2026–2030
+
+![Congestion level distribution from 2026 to 2030](assets/04_congestion_level_distribution.png)
+
+This view compares how the share of `Free / Normal / Congested / Very Congested` conditions changes by year.
+
+---
+
+## 6. Team
+
+| Team Member | GitHub | Responsibility |
+|---|---|---|
+| Sunpil Eom | [@ESP828](https://github.com/ESP828) | Quarterly average traffic forecasting |
+| Seoyoung Yoon | [@ila98111763-bit](https://github.com/ila98111763-bit) | Daily Top 5 / Low 5 traffic forecasting |
+| Seungbo Sim | [@ssbgit01](https://github.com/ssbgit01) | Weekday traffic forecasting |
+| **Jeesung Kahng** | **[@diligencefrozen](https://github.com/diligencefrozen)** | **Selected-date congestion forecasting by time of day** |
+| Seungjae Baek | [@paikyeon](https://github.com/paikyeon) | District inflow/outflow traffic forecasting |
+
+---
+
+## 7. Tech Stack
 
 | Area | Tools |
 |---|---|
 | Language | Python |
 | Environment | Google Colab, Jupyter Notebook |
-| Data processing | pandas, NumPy |
+| Data Processing | pandas, NumPy |
 | Visualization | Matplotlib |
-| File handling | pathlib, glob, zipfile, os |
+| File Handling | pathlib, glob, zipfile, os |
+| Model | Trend-based regression |
 | Evaluation | MAE, R² |
 
-### 8. Repository Structure
+---
+
+## 8. Repository Structure
 
 ```text
 .
@@ -344,53 +448,105 @@ In plain terms, the model looks at how traffic changed over the previous years a
     └── daily_top_low_forecast.py
 ```
 
-- `project_base.py` contains the shared preprocessing and forecasting logic.
-- `specific_day_congestion.py` contains my selected-date congestion analysis.
-- `assets/` contains the main charts used in this README.
+### Key Files
 
-### 9. How to Run
+- `src/project_base.py`  
+  Shared data loading, preprocessing, analysis-table construction, regression training, and forecasting.
 
-The original project was built for **Google Colab**.
+- `src/specific_day_congestion.py`  
+  My selected-date congestion forecasting and visualization workflow.
 
-1. Prepare the cleaned dataset described in `data/README.md`.
-2. Upload the dataset, `src/project_base.py`, and the analysis script to Colab.
-3. Install the required packages.
+- `src/weekday_forecast.py`  
+  Weekday traffic forecasting.
+
+- `src/quarterly_forecast.py`  
+  Quarterly average traffic forecasting.
+
+- `src/district_flow_forecast.py`  
+  District inflow/outflow traffic forecasting.
+
+- `src/daily_top_low_forecast.py`  
+  Daily Top 5 / Low 5 traffic analysis.
+
+- `assets/`  
+  Main charts used in the README and presentation.
+
+---
+
+## 9. Running the Project
+
+The original workflow was developed for **Google Colab**.
+
+### 1) Clone the repository
+
+```bash
+git clone <repository-url>
+cd seoul-traffic-analysis-forecasting
+```
+
+### 2) Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. To run my part of the project:
+### 3) Prepare the data
+
+See `data/README.md` and prepare:
+
+```text
+seoul_traffic_2020_2025_point_month_weekday_all.csv
+seoul_traffic_2020_2025_point_month_hour_all.csv
+seoul_traffic_2020_2025_station_master_all.csv
+```
+
+The original Colab workflow expects these cleaned files to be provided through a ZIP archive.
+
+### 4) Run my analysis
 
 ```bash
 python src/specific_day_congestion.py
 ```
 
-> Some scripts still assume Colab's `/content` directory.  
-> Running them locally requires replacing those fixed paths with configurable ones.
+> Some scripts still rely on Colab's `/content` path.  
+> Running the project locally requires moving those hard-coded paths into configuration or command-line arguments.
 
-### 10. Limitations
+---
 
-This is an **educational traffic-analysis and forecasting project**, not a production traffic system.
+## 10. Limitations
 
-- The 2026–2030 values are estimates based on historical patterns.
-- The model does not fully account for future construction, policy changes, public transit changes, weather, or major events.
-- The 100% congestion score is a historical reference point, not road capacity.
-- A production system would need more data, stronger validation, and comparisons across several forecasting methods.
+The 2026–2030 outputs are **forecasts based on historical year-over-year trends**.
 
-### 11. What I Would Improve Next
+The current model does not fully account for:
 
-- Replace Colab-specific paths with configurable paths
-- Add automated tests for preprocessing and congestion scoring
+- Road construction or network changes
+- Transportation policy changes
+- Changes in public-transit usage
+- Weather
+- Major events
+- Long-term demographic or urban-structure changes
+
+The 100% congestion score is also a relative benchmark against 2025 traffic, not a measure of road capacity.
+
+---
+
+## 11. Next Steps
+
+Potential improvements include:
+
+- Remove Colab-specific paths and introduce configuration
+- Add tests for preprocessing and congestion-scoring logic
 - Save model metrics and forecast outputs automatically
-- Compare the current model with additional forecasting methods
-- Add weather, holiday, event, and road-network data
-- Package the workflow as a command-line tool or lightweight dashboard
+- Compare the current approach with other regression and time-series models
+- Add weather, holiday, event, and road-network features
+- Package the workflow behind a CLI or lightweight dashboard
 
-### 12. Data Source
+---
+
+## 12. Data Source
 
 **Seoul Open Data Plaza — Seoul Traffic Volume Information**  
 https://data.seoul.go.kr/dataList/OA-15064/L/1/datasetView.do
 
 **Project period:** July 1–22, 2026  
-**Project type:** 5-person team project / data analysis and forecasting
+**Project type:** Five-person team project / data analysis and forecasting
