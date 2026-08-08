@@ -238,7 +238,6 @@ python src/specific_day_congestion.py
 
 > 일부 코드는 Google Colab의 `/content` 경로를 기준으로 작성돼 있습니다.  
 > 로컬 환경에서 실행하려면 하드코딩된 파일 경로를 설정값이나 실행 인자로 분리하는 작업이 필요합니다.
-
 ---
 
 ## 10. 한계
@@ -254,13 +253,13 @@ python src/specific_day_congestion.py
 - 대형 행사
 - 장기적인 인구·도시 구조 변화
 
-또한 혼잡도 100%는 도로 용량이 아니라 **2025년 데이터를 기준으로 만든 상대적인 혼잡 지표**입니다.
+또한 혼잡도 100%는 도로 용량이 아니라 **2025년 데이터를 기준으로 만든 상대적인 혼잡 지표**입니다。
 
 ---
 
 ## 11. 개선 방향
 
-현재 코드를 포트폴리오 이후 단계까지 발전시킨다면 다음 항목을 우선 개선할 수 있습니다.
+현재 코드를 포트폴리오 이후 단계까지 발전시킨다면 다음 항목을 우선 개선할 수 있습니다。
 
 - Colab 전용 경로 제거 및 설정 파일 분리
 - 데이터 전처리·혼잡도 계산 로직 테스트 코드 추가
@@ -273,7 +272,7 @@ python src/specific_day_congestion.py
 
 ## 12. 데이터 출처
 
-**서울 열린데이터광장 — 서울시 교통량 정보**  
+**서울 열린데이터광장 — 서울시 교통량 정보**
 https://data.seoul.go.kr/dataList/OA-15064/L/1/datasetView.do
 
 **프로젝트 기간:** 2026년 7월 1일~7월 22일  
@@ -304,7 +303,6 @@ The project focuses on how traffic changes by **time of day, weekday, quarter, d
 To keep the team analyses consistent, we moved the shared preprocessing and forecasting logic into `project_base.py`.
 
 Each analysis script imports the same module for:
-
 - ZIP discovery and extraction
 - CSV loading
 - Data preprocessing
@@ -542,10 +540,11 @@ Potential improvements include:
 - Package the workflow behind a CLI or lightweight dashboard
 
 ---
+## 12. Data Source
 
 ## 12. Data Source
 
-**Seoul Open Data Plaza — Seoul Traffic Volume Information**  
+Seoul Open Data Plaza — Seoul Traffic Volume Information  
 https://data.seoul.go.kr/dataList/OA-15064/L/1/datasetView.do
 
 **Project period:** July 1–22, 2026  
